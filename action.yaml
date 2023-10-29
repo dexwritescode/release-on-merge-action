@@ -4,7 +4,7 @@ author: 'dexwritescode'
 inputs:
   version-increment-strategy:  # Valid values: major|minor|patch|norelease
     description: 'The version number to increment. Options major|minor|patch|norelease'
-    required: true
+    required: false
     default: 'patch'
   initial-version:
     description: 'The very first release version to create. The default Github tag will be v0.1.0'
@@ -33,7 +33,7 @@ outputs:
     description: 'The version number that will be created prepended by the tag prefix'
 runs:
   using: 'docker'
-  image: 'ghcr.io/dexwritescode/release-on-merge-action:v0.1.2'
+  image: 'ghcr.io/dexwritescode/release-on-merge-action:v0.1.4'
   args:
     - ${{ inputs.version-increment-strategy }}
     - ${{ inputs.initial-version }}
