@@ -20,7 +20,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: dexwritescode/release-on-merge-action@v0.2.2
+      - uses: dexwritescode/release-on-merge-action@v1.0.0
 ```
 
 The only permissions needed for `GITHUB_TOKEN` to create tags and releases is `contents: write`.
@@ -30,7 +30,7 @@ If no previous release found in the repo, the default configuration will create 
 This behaviour can be overriden by setting the `initial-version`.
 
 ```yaml
-- uses: dexwritescode/release-on-merge-action@v0.2.1
+- uses: dexwritescode/release-on-merge-action@v1.0.0
   with:
     initial-version: 1.2.3
 ```
