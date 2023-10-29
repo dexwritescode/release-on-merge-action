@@ -25,7 +25,17 @@ jobs:
 
 The only permissions needed for `GITHUB_TOKEN` to create tags and releases is `contents: write`.
 
-List of inputs:
+### Initial Release
+If no previous release found in the repo, the default configuration will create release and tag `v0.1.0`
+This behaviour can be overriden by setting the `initial-version`.
+
+```yaml
+- uses: dexwritescode/release-on-merge-action@v0.2.1
+  with:
+    initial-version: 1.2.3
+```
+
+### List of inputs:
 
 ```yaml
   version-increment-strategy:  # Valid values: major|minor|patch|norelease
