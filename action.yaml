@@ -1,0 +1,46 @@
+name: 'Release on merge action'
+description: 'Create a release on merge'
+author: 'dexwritescode'
+inputs:
+  version-increment-strategy:  # Valid values: major|minor|patch|norelease
+    description: 'The version number to increment. Options major|minor|patch|norelease'
+    required: true
+    default: 'patch'
+  initial-version:
+    description: 'The very first release version to create. The default Github tag will be v0.1.0'
+    required: false
+    default: '0.1.0'
+  tag-prefix:
+    description: 'Git tag prefix. Example the v in v1.2.3'
+    required: false
+    default: 'v'
+  body:
+    description: 'Body text to prepend the auto generated body'
+    required: false
+    default: ''
+  generate-release-notes:
+    description: 'Whether to generate release notes. Default true.'
+    required: false
+    default: true
+  dry-run:
+    description: 'Do not create a release, just log the oputput.'
+    required: false
+    default: false
+outputs:
+  version:
+    description: 'The version number that will be created'
+  tag:
+    description: 'The version number that will be created prepended by the tag prefix'
+runs:
+  using: 'docker'
+  image: 'ghcr.io/dexwritescode/release-on-merge-action:v0.1.2'
+  args:
+    - ${{ inputs.version-increment-strategy }}
+    - ${{ inputs.initial-version }}
+    - ${{ inputs.tag-prefix }}
+    - ${{ inputs.body }}
+    - ${{ inputs.generate-release-notes }}
+    - ${{ inputs.dry-run }}
+branding:
+  icon: 'layers'
+  color: 'green'
