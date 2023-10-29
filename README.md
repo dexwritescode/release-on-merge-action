@@ -1,10 +1,10 @@
 # Release on Merge Action
 
-[![CI](https://github.com/dexwritescode/release-on-merge-action/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/dexwritescode/release-on-merge-action/actions/workflows/ci.yaml)
+Github action to create git tag and Github release on merge.
 
-Github action to create Github release on merge
+## Usage 
 
-## Usage example
+### Example
 
 ``` yaml
 on: 
@@ -18,9 +18,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: dexwritescode/release-on-merge-action@main
-        with:
-          version-increment-strategy: patch
+      - uses: dexwritescode/release-on-merge-action@v1
 ```
 
 List of inputs:
@@ -28,7 +26,7 @@ List of inputs:
 ```yaml
   version-increment-strategy:  # Valid values: major|minor|patch|norelease
     description: 'The version number to increment. Options major|minor|patch|norelease'
-    required: true
+    required: false
     default: 'patch'
   initial-version:
     description: 'The very first release version to create. The default Github tag will be v0.1.0'
@@ -51,3 +49,5 @@ List of inputs:
     required: false
     default: false
 ```
+
+This action uses [release-on-merge-action-source](https://github.com/dexwritescode/release-on-merge-action-source)
