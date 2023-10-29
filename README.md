@@ -15,11 +15,15 @@ on:
 jobs:
   release-on-merge:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: dexwritescode/release-on-merge-action@v1
 ```
+
+The only permissions needed for `GITHUB_TOKEN` to create tags and releases is `contents: write`.
 
 List of inputs:
 
