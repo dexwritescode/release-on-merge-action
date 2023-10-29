@@ -65,3 +65,7 @@ This behaviour can be overriden by setting the `initial-version`.
 ```
 
 This action uses [release-on-merge-action-source](https://github.com/dexwritescode/release-on-merge-action-source)
+
+## License
+
+This Github Action is licensed under <a href="LICENSE">MIT license</a>.
