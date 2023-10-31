@@ -25,43 +25,57 @@ jobs:
 
 The only permissions needed for `GITHUB_TOKEN` to create tags and releases is `contents: write`.
 
-### Initial Release
-If no previous release found in the repo, the default configuration will create release and tag `v0.1.0`
-This behaviour can be overriden by setting the `initial-version`.
+## Inputs
 
-```yaml
-- uses: dexwritescode/release-on-merge-action@v1.0.0
-  with:
-    initial-version: 1.2.3
+### `version-increment-strategy`
+
+**Optional** The version number to increment. Default `patch`.
+
+It can be one of: `major`, `minor`, `patch`, `norelease`
+
+```yml
+version-increment-strategy: major
 ```
 
-### List of inputs:
+### `initial-version`
 
-```yaml
-  version-increment-strategy:  # Valid values: major|minor|patch|norelease
-    description: 'The version number to increment. Options major|minor|patch|norelease'
-    required: false
-    default: 'patch'
-  initial-version:
-    description: 'The very first release version to create. The default Github tag will be v0.1.0'
-    required: false
-    default: '0.1.0'
-  tag-prefix:
-    description: 'Git tag prefix. Example the v in v1.2.3'
-    required: false
-    default: 'v'
-  body:
-    description: 'Body text to prepend the auto generated body'
-    required: false
-    default: ''
-  generate-release-notes:
-    description: 'Whether to generate release notes. Default true.'
-    required: false
-    default: true
-  dry-run:
-    description: 'Do not create a release, just log the oputput.'
-    required: false
-    default: false
+**Optional** If no previous release found in the repo, the default configuration will create release and tag `v0.1.0`.
+
+The below override will create release and tag `v1.2.3`
+```yml
+initial-version: '1.2.3'
+```
+
+### `tag-prefix`
+
+**Optional** Git tag prefix. Example the v in `v1.2.3`. Default `v`.
+
+```yml
+tag-prefix: v
+```
+
+### `body`
+
+**Optional** Body text to prepend the auto generated body.
+
+```yml
+body: 'Body text...'
+```
+
+### `generate-release-notes`
+
+**Optional** Whether to auto-generate Github release notes. Default `true`.
+
+```yml
+generate-release-notes: true
+```
+
+### `dry-run`
+
+**Optional** Do not create a release, just log the oputput if enabled. Default `false`.
+
+```yml
+dry-run: true
 ```
 
 This action uses [release-on-merge-action-source](https://github.com/dexwritescode/release-on-merge-action-source)
