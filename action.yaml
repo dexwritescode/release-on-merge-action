@@ -4,7 +4,7 @@ author: 'dexwritescode'
 inputs:
   version-increment-strategy:  # Valid values: major|minor|patch|norelease
     description: 'The version number to increment. Options major|minor|patch|norelease'
-    required: false
+    required: true
     default: 'patch'
   initial-version:
     description: 'The very first release version to create. The default Github tag will be v0.1.0'
@@ -26,6 +26,38 @@ inputs:
     description: 'Do not create a release, just log the oputput.'
     required: false
     default: false
+  github-host:
+    description: 'GitHub API host. Override for GitHub Enterprise (e.g. https://github.example.com/api/v3). Defaults to https://api.github.com.'
+    required: false
+    default: 'https://api.github.com'
+  prerelease:
+    description: 'Create a pre-release instead of a stable release.'
+    required: false
+    default: false
+  prerelease-identifier:
+    description: 'Pre-release identifier appended to the version (e.g. "beta" produces v1.2.0-beta.1). Defaults to rc.'
+    required: false
+    default: 'rc'
+  use-label-strategy:
+    description: 'Derive the increment strategy from PR labels instead of the version-increment-strategy input. Falls back to version-increment-strategy if no matching label is found.'
+    required: false
+    default: false
+  label-major:
+    description: 'PR label that triggers a major version bump.'
+    required: false
+    default: 'release:major'
+  label-minor:
+    description: 'PR label that triggers a minor version bump.'
+    required: false
+    default: 'release:minor'
+  label-patch:
+    description: 'PR label that triggers a patch version bump.'
+    required: false
+    default: 'release:patch'
+  label-skip:
+    description: 'PR label that skips release creation.'
+    required: false
+    default: 'release:skip'
 outputs:
   version:
     description: 'The version number that will be created'
@@ -33,7 +65,7 @@ outputs:
     description: 'The version number that will be created prepended by the tag prefix'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/dexwritescode/release-on-merge-action-source:v1.1.0'
+  image: 'docker://ghcr.io/dexwritescode/release-on-merge-action-source:v1.2.0'
   args:
     - ${{ inputs.version-increment-strategy }}
     - ${{ inputs.initial-version }}
