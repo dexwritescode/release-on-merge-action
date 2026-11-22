@@ -156,6 +156,19 @@ label-patch: 'bump:patch'
 label-skip: 'bump:skip'
 ```
 
+### `version-files`
+
+**Optional** Where the version lives in the repository, so the action keeps it in step with the tags. Default `''` (only tag, as without this input).
+
+- `cargo`: the version in the root `Cargo.toml` (`[workspace.package]` or `[package]`), and the matching entries in `Cargo.lock`.
+- `file:PATH`: a file holding only the version, e.g. `file:VERSION`.
+
+```yml
+version-files: cargo
+```
+
+See [Versions in files](#versions-in-files). Not supported with `prerelease`.
+
 ## Outputs
 
 ### `version`
@@ -205,6 +218,57 @@ Label your PRs with `release:major`, `release:minor`, `release:patch`, or `relea
     prerelease: true
     prerelease-identifier: beta
 ```
+
+### Versions in files
+
+Like Maven's `-SNAPSHOT`, the branch always holds the next version with `-dev`, and each release writes its exact version into the files:
+
+1. A PR is merged while the files say `0.5.5-dev`. Its label picks the release, say `v0.5.5`.
+2. The action adds a commit that sets the files to `0.5.5` and tags it `v0.5.5`, then a commit that sets them to `0.5.6-dev` (the release's patch + 1), and fast-forwards the branch.
+
+So a tagged commit always holds its own version, and every other build reports a version above every release and below the one it will become. Any label works: `0.5.6-dev` followed by a `release:minor` PR releases `0.6.0` and moves to `0.6.1-dev`. The files may hold any version at or below the next release; above it, the action stops with an error.
+
+Only pushes that merge a PR release, so the action's own commits never do. The token must be able to push to the branch; with a ruleset or branch protection that requires PRs, use a GitHub App that is on the bypass list:
+
+1. Create a GitHub App (Settings → Developer settings → GitHub Apps) with no webhook and the repository permissions **Contents: Read and write** and **Pull requests: Read-only**. Install it on the repository.
+2. Add the App to the branch's ruleset bypass list, mode **Always**.
+3. Store its App ID as the variable `RELEASE_APP_ID` and a private key as the secret `RELEASE_APP_PRIVATE_KEY`.
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-on-merge:
+    # The action's own push starts this workflow again; skip it here so it never
+    # joins the concurrency group, where it would cancel a waiting release.
+    if: ${{ !startsWith(github.event.head_commit.message, 'Next development version') }}
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+      - uses: dexwritescode/release-on-merge-action@v1
+        env:
+          GITHUB_TOKEN: ${{ steps.app.outputs.token }}
+        with:
+          use-label-strategy: true
+          version-files: cargo
+```
+
+Things to know:
+
+- Commits pushed with an App token start workflows again. The job's `if` above skips the action's own commit; without it, that run finds no PR and stops with a warning, but in the concurrency group it can cancel a release that is waiting.
+- GitHub keeps one waiting run per concurrency group, so with three merges in quick succession the middle one's release can be cancelled. Re-run it.
+- The release is sized by the pushed commit's PR, but built from the branch head when the run starts. If another PR merged in between, this release includes it, and that PR's own run releases again on top.
+- `cargo`: workspace dependencies that pin the workspace's own crates with a `version` (as for publishing to crates.io) are not updated.
 
 This action uses [release-on-merge-action-source](https://github.com/dexwritescode/release-on-merge-action-source)
 

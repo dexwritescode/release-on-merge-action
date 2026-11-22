@@ -58,6 +58,10 @@ inputs:
     description: 'PR label that skips release creation.'
     required: false
     default: 'release:skip'
+  version-files:
+    description: 'Where the version lives in the repository: `cargo` (Cargo.toml and Cargo.lock) or `file:PATH` (a file holding only the version). When set, each merged PR adds a release commit (tagged) and a next-snapshot commit (patch + 1, -dev) to the branch, and pushes without a merged PR are skipped. The token must be allowed to push to the branch. Not supported with prerelease. Empty (default) only tags.'
+    required: false
+    default: ''
 outputs:
   version:
     description: 'The version number that will be created'
@@ -65,7 +69,7 @@ outputs:
     description: 'The version number that will be created prepended by the tag prefix'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/dexwritescode/release-on-merge-action-source:v1.2.0'
+  image: 'docker://ghcr.io/dexwritescode/release-on-merge-action-source:v1.3.0'
   args:
     - ${{ inputs.version-increment-strategy }}
     - ${{ inputs.initial-version }}
