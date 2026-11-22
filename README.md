@@ -232,7 +232,7 @@ Only pushes that merge a PR release, so the action's own commits never do. The t
 
 1. Create a GitHub App (Settings → Developer settings → GitHub Apps) with no webhook and the repository permissions **Contents: Read and write** and **Pull requests: Read-only**. Install it on the repository.
 2. Add the App to the branch's ruleset bypass list, mode **Always**.
-3. Store its App ID as the variable `RELEASE_APP_ID` and a private key as the secret `RELEASE_APP_PRIVATE_KEY`.
+3. Store its Client ID (on the App's settings page) as the variable `RELEASE_APP_CLIENT_ID` and a private key as the secret `RELEASE_APP_PRIVATE_KEY`.
 
 ```yaml
 on:
@@ -253,7 +253,7 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app
         with:
-          app-id: ${{ vars.RELEASE_APP_ID }}
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       - uses: dexwritescode/release-on-merge-action@v1
         env:
